@@ -34,12 +34,12 @@ def validate_request_keys(data, keys):
 
     return True
 
-def validate_request_type(item_type, *args):
-    for item in args:
-        if type(item) is not item_type:
+def validate_request_type(item_type, data):
+    for key in data.keys():
+        if type(data[key]) is not item_type:
             return False
 
-        if item_type == str and item.strip() == '':
+        if item_type == str and data[key].strip() == '':
             return False
 
     return True

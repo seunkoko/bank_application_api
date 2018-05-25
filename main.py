@@ -12,12 +12,12 @@ load_dotenv(dotenv_path=env_path)
 try:
     from config import app_configuration
     from api.views.user import (
-        UserSignupResource, UserLoginResource
+        UserSignupResource, UserLoginResource, UserResource
     )
 except ImportError:
     from bank_application_api.config import app_configuration
     from bank_application_api.api.views.user import (
-        UserSignupResource, UserLoginResource
+        UserSignupResource, UserLoginResource, UserResource
     )
 
 # function that creates the flask app, initializes the db and sets the routes
@@ -51,6 +51,7 @@ def create_flask_app(environment):
     ## Api endpoints with flask-restful 
     api.add_resource(UserSignupResource, '/signup', '/signup/', endpoint='user_signup')
     api.add_resource(UserLoginResource, '/login', '/login/', endpoint='user_login')
+    api.add_resource(UserResource, '/user', '/user/', endpoint='user')
 
     # handle default 404 exceptions with a custom response
     @app.errorhandler(404)
