@@ -147,3 +147,17 @@ class WithdrawResource(Resource):
                 'message': 'Transaction succesfully completed',
             }
         }, 201
+
+
+##################################################################################
+"""
+## Add a TransferResource class
+
+Note: The transfer resource class transfers from one account to another
+
+Things to note are:
+    * You cannot transfer more than you have in your account
+    * No matter how much you transfer, you must have at least 500 in your account
+    * You cannot transfer to the same account number
+"""
+##################################################################################
