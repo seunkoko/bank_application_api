@@ -159,7 +159,6 @@ class UserResource(Resource):
             }
         }, 200
         
-    
     @token_required
     @validate_request_json
     def put(self):
@@ -204,5 +203,28 @@ class UserResource(Resource):
             'data': {
                 'user': _user.serialize(),
                 'message': 'User information updated succesfully',
+            }
+        }, 200
+
+    @token_required
+    def delete(self):
+        # to prevent tokens with string ids from breaking the app
+        try:
+            _user_id = int(g.current_user.id)
+        except:
+            return bapp_errors("User does not exist", 404)
+
+        _user = User.query.get(int(g.current_user.id))
+        if not _user:
+            return bapp_errors("User does not exist", 404)
+
+        # deletes a user
+        _user.delete()
+
+        return {
+            'status': 'success',
+            'data': {
+                'user': {},
+                'message': 'User succesfully deleted',
             }
         }, 200
