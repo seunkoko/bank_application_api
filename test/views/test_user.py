@@ -1,8 +1,12 @@
 import json
 import pytest
 
-from bank_application_api.test.base import BaseTestCase
-from bank_application_api.api.models import db, User
+try:
+    from test.base import create_flask_app
+    from api.models import db, User
+except ImportError:
+    from bank_application_api.test.base import BaseTestCase
+    from bank_application_api.api.models import db, User
 
 
 class UserSignupTestCase(BaseTestCase):
