@@ -140,6 +140,27 @@ class UserLoginResource(Resource):
 class UserResource(Resource):
     
     @token_required
+    def get(self):
+        # to prevent tokens with string ids from breaking the app
+        try:
+            _user_id = int(g.current_user.id)
+        except:
+            return bapp_errors("User does not exist", 404)
+
+        _user = User.query.get(int(g.current_user.id))
+        if not _user:
+            return bapp_errors("User does not exist", 404)
+
+        return {
+            'status': 'success',
+            'data': {
+                'user': _user.serialize(),
+                'message': 'User information retrieved succesfully',
+            }
+        }, 200
+        
+    
+    @token_required
     @validate_request_json
     def put(self):
         json_input = request.get_json()
