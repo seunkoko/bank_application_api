@@ -46,6 +46,7 @@ class User(db.Model, ModelViewsMix):
     email = db.Column(db.String(50), unique=True, nullable=False)
     _password = db.Column('password', db.String(), nullable=False)
     account_number = db.Column(db.String(10), nullable=False, unique=True)
+    account_amount = db.Column(db.Float, default=0.0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     modified_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     transactions = db.relationship('Transaction', backref='user_transaction')
