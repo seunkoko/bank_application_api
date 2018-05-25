@@ -1,13 +1,20 @@
 import os
+from os.path import join, dirname
 
 from flask import Flask, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api
-from pathlib import Path
-from dotenv import load_dotenv
+try:
+    from pathlib import Path
+    from dotenv import load_dotenv
 
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
+    env_path = Path('.') / '.env'
+except:
+    from dotenv import load_dotenv
+
+    env_path = join(dirname(__file__), '.env')
+
+load_dotenv(env_path)
 
 
 """
