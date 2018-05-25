@@ -9,6 +9,10 @@ from dotenv import load_dotenv
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
+
+"""
+    Import transfer resource 
+"""
 try:
     from config import app_configuration
     from api.views.user import (
@@ -60,6 +64,9 @@ def create_flask_app(environment):
     api.add_resource(UserResource, '/user', '/user/', endpoint='user')
     api.add_resource(DepositResource, '/deposit', '/deposit/', endpoint='user_deposit')
     api.add_resource(WithdrawResource, '/withdraw', '/withdraw/', endpoint='user_withdraw')
+    """
+    Add transfer resource endpoint
+    """
 
     # handle default 404 exceptions with a custom response
     @app.errorhandler(404)
