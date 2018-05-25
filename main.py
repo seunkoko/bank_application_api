@@ -15,7 +15,7 @@ try:
         UserSignupResource, UserLoginResource, UserResource
     )
     from api.views.transaction import (
-        DepositResource
+        DepositResource, WithdrawResource
     )
 except ImportError:
     from bank_application_api.config import app_configuration
@@ -23,7 +23,7 @@ except ImportError:
         UserSignupResource, UserLoginResource, UserResource
     )
     from bank_application_api.api.views.transaction import (
-        DepositResource
+        DepositResource, WithdrawResource
     )
 
 # function that creates the flask app, initializes the db and sets the routes
@@ -59,6 +59,7 @@ def create_flask_app(environment):
     api.add_resource(UserLoginResource, '/login', '/login/', endpoint='user_login')
     api.add_resource(UserResource, '/user', '/user/', endpoint='user')
     api.add_resource(DepositResource, '/deposit', '/deposit/', endpoint='user_deposit')
+    api.add_resource(WithdrawResource, '/withdraw', '/withdraw/', endpoint='user_withdraw')
 
     # handle default 404 exceptions with a custom response
     @app.errorhandler(404)
