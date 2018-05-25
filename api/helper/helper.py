@@ -34,12 +34,13 @@ def validate_request_keys(data, keys):
 
     return True
 
-def validate_request_type(item_type, data):
+def validate_request_type(data):
     for key in data.keys():
-        if type(data[key]) is not item_type:
+        # exception added for tests which come in as unicode
+        if not isinstance(data[key], str) and not isinstance(data[key], unicode):
             return False
 
-        if item_type == str and data[key].strip() == '':
+        if str(data[key]).strip() == '':
             return False
 
     return True

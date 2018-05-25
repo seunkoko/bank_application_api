@@ -45,7 +45,7 @@ class DepositResource(Resource):
         _account_number = str(json_input["account_number"])
 
         json_input.pop('amount', None)
-        if not validate_request_type(str, json_input):
+        if not validate_request_type(json_input):
             return bapp_errors(
                 'Account number cannot be empty', 
                 400

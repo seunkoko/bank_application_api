@@ -53,9 +53,9 @@ class UserSignupResource(Resource):
         _password = str(json_input["password"])
 
         json_input.pop('account_amount', None)
-        if not validate_request_type(str, json_input):
+        if not validate_request_type(json_input):
             return bapp_errors(
-                'None of these fields {0} are allowed to be empty'.format(fields), 
+                'None of these fields {0} are allowed to be empty or of invalid type'.format(fields), 
                 400
             )
 
@@ -106,7 +106,7 @@ class UserLoginResource(Resource):
 
         _email = str(json_input["email"])
         _password = str(json_input["password"])
-        if not validate_request_type(str, json_input):
+        if not validate_request_type(json_input):
             return bapp_errors(
                 'None of these fields {0} are allowed to be empty'.format(fields), 
                 400
@@ -171,7 +171,7 @@ class UserResource(Resource):
                     400
                 )
 
-        if not validate_request_type(str, json_input):
+        if not validate_request_type(json_input):
             return bapp_errors(
                 'Request body should not contain null values', 
                 400
