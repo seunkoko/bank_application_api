@@ -64,13 +64,59 @@ class UserSignupResource(Resource):
         payload = {
                     "id": new_user.id
                 }
-        _token = jwt.encode(payload, os.getenv("TOKEN_KEY"), algorithm='HS256')
+        _token = jwt.encode(payload, os.getenv("TOKEN_KEY"), algorithm='HS256').decode("utf-8") 
 
         return {
             'status': 'success',
             'data': {
                 'user': new_user.serialize(), 
                 'message': 'User created succesfully',
-                'token': _token.decode("utf-8") 
+                'token': _token
             }
         }, 201
+
+
+class UserLoginResource(Resource):
+    
+    @validate_request_json
+    def post(self):
+        json_input = request.get_json()
+
+        fields = '(email and password)'
+        if not validate_request_keys(json_input, ['email', 'password']):
+            return bapp_errors(
+                'These fields are required on login {0}'.format(fields), 
+                400
+            )
+
+        _email = str(json_input["email"])
+        _password = str(json_input["password"])
+        if not validate_request_type(str, _email, _password):
+            return bapp_errors(
+                'None of these fields {0} are allowed to be empty'.format(fields), 
+                400
+            )
+        
+        _user = User.query.filter(User.email==_email).first()
+        if not _user:
+            return bapp_errors(
+                'User does not exist', 
+                404
+            )
+
+        if not _user.check_password(_password):
+            return bapp_errors("Your password is incorrect, please try again", 401)
+
+        payload = {
+                    "id": _user.id
+                }
+        _token = jwt.encode(payload, os.getenv("TOKEN_KEY"), algorithm='HS256').decode("utf-8") 
+
+        return {
+            'status': 'success',
+            'data': {
+                'user': _user.serialize(), 
+                'message': 'User login succesfull',
+                'token': _token
+            }
+        }, 200
