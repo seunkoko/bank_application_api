@@ -6,6 +6,14 @@ from werkzeug import generate_password_hash, check_password_hash
 db = SQLAlchemy()
 
 class ModelViewsMix(object):
+    def serialize(self):
+        serialized_obj = {column.name: getattr(self, column.name)
+                for column in self.__table__.columns}
+        for key in serialized_obj:
+            if type(serialized_obj[key]) is datetime:
+                serialized_obj[key] = str(serialized_obj[key])
+        return serialized_obj
+
     def save(self):
         """Saves an instance of the model to the database."""
         try:
