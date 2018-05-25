@@ -87,6 +87,7 @@ class Transaction(db.Model, ModelViewsMix):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id', ondelete='SET NULL'))
     transaction_type = db.Column(db.String)
+    transaction_amount = db.Column(db.Float, default=0.0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     modified_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

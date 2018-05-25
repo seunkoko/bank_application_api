@@ -38,9 +38,9 @@ class UserSignupResource(Resource):
 
         # handling more exceptions
         try:
-            _account_amount = int(json_input['account_amount'])
+            _account_amount = float(json_input['account_amount'])
         except:
-            return bapp_errors("Your account amount must be a number", 404)
+            return bapp_errors("Your account amount must be a number", 400)
         if _account_amount < 500:
                 return bapp_errors(
                     "Sorry, you cannot open an account with less than \u20A6 500.00",
