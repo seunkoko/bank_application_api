@@ -29,18 +29,30 @@ class UserSignupResource(Resource):
     def post(self):
         json_input = request.get_json()
 
-        fields = '(firstname, lastname, middlename, email and password)'
-        if not validate_request_keys(json_input, ['firstname', 'lastname', 'middlename', 'email', 'password']):
+        fields = '(account_amount, firstname, lastname, middlename, email and password)'
+        if not validate_request_keys(json_input, ['account_amount', 'firstname', 'lastname', 'middlename', 'email', 'password']):
             return bapp_errors(
                 'These fields are required on signup {0}'.format(fields), 
                 400
             )
 
+        # handling more exceptions
+        try:
+            _account_amount = int(json_input['account_amount'])
+        except:
+            return bapp_errors("Your account amount must be a number", 404)
+        if _account_amount < 500:
+                return bapp_errors(
+                    "Sorry, you cannot open an account with less than \u20A6 500.00",
+                    400
+                )
         _firstname = str(json_input["firstname"])
         _lastname = str(json_input["lastname"])
         _middlename = str(json_input["middlename"])
         _email = str(json_input["email"])
         _password = str(json_input["password"])
+
+        json_input.pop('account_amount', None)
         if not validate_request_type(str, json_input):
             return bapp_errors(
                 'None of these fields {0} are allowed to be empty'.format(fields), 
@@ -59,6 +71,7 @@ class UserSignupResource(Resource):
             lastname=_lastname,
             email=_email,
             password=_password,
+            account_amount=_account_amount,
             account_number=generate_unique_account_number()
         )
         new_user.save()
@@ -130,12 +143,13 @@ class UserResource(Resource):
     @validate_request_json
     def put(self):
         json_input = request.get_json()
-
-        if "email" in json_input:
-            return bapp_errors(
-                'Sorry, emails cannot be updated', 
-                400
-            )
+        
+        for key in json_input.keys():
+            if key in ["email", "account_amount", "account_number"]:
+                return bapp_errors(
+                    'Sorry, emails, amounts and account numbers cannot be updated', 
+                    400
+                )
 
         if not validate_request_type(str, json_input):
             return bapp_errors(
