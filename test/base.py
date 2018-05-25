@@ -3,9 +3,12 @@ import json
 
 from flask_testing import TestCase
 
-from bank_application_api.main import create_flask_app
-from bank_application_api.api.models import db
-
+try:
+    from main import create_flask_app
+    from api.models import db
+except ImportError:
+    from bank_application_api.main import create_flask_app
+    from bank_application_api.api.models import db
 
 class BaseTestCase(TestCase):
 
