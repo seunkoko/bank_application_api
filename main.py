@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, jsonify
 from flask_migrate import Migrate
+from flask_restful import Api
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -10,8 +11,10 @@ load_dotenv(dotenv_path=env_path)
 
 try:
     from config import app_configuration
+    from api.views.user import UserSignupResource
 except ImportError:
     from bank_application_api.config import app_configuration
+    from bank_application_api.api.views.user import UserSignupResource
 
 # function that creates the flask app, initializes the db and sets the routes
 def create_flask_app(environment):
@@ -30,12 +33,19 @@ def create_flask_app(environment):
     # initilize migration commands
     migrate = Migrate(app, models.db)
 
+    # initilize api resources
+    api = Api(app)
+
     environment = os.getenv('FLASK_CONFIG')
 
     # Landing route
     @app.route('/')
     def index():
         return "Welcome to the Banking Application Api"
+
+    ##
+    ## Api endpoints with flask-restful
+    api.add_resource(UserSignupResource, '/signup', '/signup/', endpoint='user_signup')
 
     # handle default 404 exceptions with a custom response
     @app.errorhandler(404)
