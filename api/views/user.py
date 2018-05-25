@@ -7,6 +7,7 @@ from flask_jwt import jwt
 
 try:
     from api.models import User
+    from api.helper.authorization import token_required
     from api.helper.helper import (
         validate_request_keys, validate_request_type, 
         validate_request_json, bapp_errors, 
@@ -14,6 +15,7 @@ try:
     )
 except ImportError:
     from bank_application_api.api.models import User
+    from bank_application_api.api.helper.authorization import token_required
     from bank_application_api.api.helper.helper import (
         validate_request_keys, validate_request_type, 
         validate_request_json, bapp_errors, 
@@ -39,7 +41,7 @@ class UserSignupResource(Resource):
         _middlename = str(json_input["middlename"])
         _email = str(json_input["email"])
         _password = str(json_input["password"])
-        if not validate_request_type(str, _firstname, _lastname, _middlename, _email, _password):
+        if not validate_request_type(str, json_input):
             return bapp_errors(
                 'None of these fields {0} are allowed to be empty'.format(fields), 
                 400
@@ -91,7 +93,7 @@ class UserLoginResource(Resource):
 
         _email = str(json_input["email"])
         _password = str(json_input["password"])
-        if not validate_request_type(str, _email, _password):
+        if not validate_request_type(str, json_input):
             return bapp_errors(
                 'None of these fields {0} are allowed to be empty'.format(fields), 
                 400
@@ -118,5 +120,54 @@ class UserLoginResource(Resource):
                 'user': _user.serialize(), 
                 'message': 'User login succesfull',
                 'token': _token
+            }
+        }, 200
+
+
+class UserResource(Resource):
+    
+    @token_required
+    @validate_request_json
+    def put(self):
+        json_input = request.get_json()
+
+        if "email" in json_input:
+            return bapp_errors(
+                'Sorry, emails cannot be updated', 
+                400
+            )
+
+        if not validate_request_type(str, json_input):
+            return bapp_errors(
+                'Request body should not contain null values', 
+                400
+            )
+
+        # to prevent tokens with string ids from breaking the app
+        try:
+            _user_id = int(g.current_user.id)
+        except:
+            return bapp_errors("User does not exist", 404)
+
+        _user = User.query.get(int(g.current_user.id))
+        if not _user:
+            return bapp_errors("User does not exist", 404)
+
+        # update user information
+        for key in json_input.keys():
+            if key == 'password':
+                if _user.check_password(json_input['password']):
+                    return bapp_errors(
+                        'Unauthorized, you cannot update with the same password', 
+                        401
+                    )
+            _user.__setitem__(key, json_input[key])
+        _user.save()
+
+        return {
+            'status': 'success',
+            'data': {
+                'user': _user.serialize(),
+                'message': 'User information updated succesfully',
             }
         }, 200
