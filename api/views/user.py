@@ -6,9 +6,9 @@ from flask_restful import Resource
 from flask_jwt import jwt
 
 try:
-    from api.models import User
-    from api.helper.authorization import token_required
-    from api.helper.helper import (
+    from ..models import User
+    from ..helper.authorization import token_required
+    from ..helper.helper import (
         validate_request_keys, validate_request_type, 
         validate_request_json, bapp_errors, 
         generate_unique_account_number

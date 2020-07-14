@@ -4,9 +4,9 @@ from flask import g, request
 from flask_restful import Resource
 
 try:
-    from api.models import User, Transaction
-    from api.helper.authorization import token_required
-    from api.helper.helper import (
+    from ..models import User, Transaction
+    from ..helper.authorization import token_required
+    from ..helper.helper import (
         validate_request_keys, validate_request_type, 
         validate_request_json, bapp_errors, 
     )
