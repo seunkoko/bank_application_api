@@ -6,3 +6,4 @@ __pycache_/
 .DS_Store
 .vscode/
 bank-api-env/
+.pytest_cache/
